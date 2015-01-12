@@ -4,16 +4,18 @@
   <meta charset="utf-8">
   <title>ShowEval demo</title>
   <style>
-
+  .showEval { font-family: monospace; font-size: 2em; vertical-align: text-top;}
   </style>
   <script src="jquery-1.11.1.min.js"></script>
+  <script src="showEval-0.9.0.js"></script>
 </head>
 <body>
 
 <button id="nextStep">Next Step</button>
+<!--<button id="repeatStep">Repeat Step</button>-->
 <button id="reset">Reset</button>
 
-<div>eggs = ['dogs', 'cats', 'moose']</div>
+<div class='showEval'>eggs = ['dogs', 'cats', 'moose']</div>
 <div id="showeval"></div>
 
 <script>
@@ -21,6 +23,18 @@
 $( "#nextStep" ).click(function() {
   s.evaluateStep();
 });
+
+$( "#repeatStep" ).click(function() {
+  if (s.currentStep >= s.steps.length) {
+    s.currentStep = s.steps.length - 1;
+    s.evaluateStep();
+  }
+  if (s.currentStep != 0) {
+    s.currentStep -= 1;
+    s.evaluateStep();
+  }
+});
+
 
 $( "#reset" ).click(function() {
   s.setStep(0);
@@ -36,75 +50,8 @@ steps = [["''.join(", "eggs", "['dogs', 'cats', 'moose']", ").upper().join(eggs)
          ["", "'dogscatsmoose'.upper()", "'DOGSCATSMOOSE'", ".join(eggs)"],
          ["'DOGSCATSMOOSE'.join(", "eggs", "['dogs', 'cats', 'moose']", ")"],
          ["", "'DOGSCATSMOOSE'.join(['dogs', 'cats', 'moose'])", "'dogsDOGSCATSMOOSEcatsDOGSCATSMOOSEmoose'", ""]]
-
-
-
 step = 0;
 
-var ShowEval = function(container, steps) {
-  this.container = container;
-  this.steps = steps;
-  this.currentStep = 0;
-
-  // create elements
-  this.container.append($('<span>').addClass('pre'));
-  this.container.append($('<span>').addClass('eval'));
-  this.container.append($('<span>').addClass('post'));
-};
-
-ShowEval.prototype.setStep = function(step) {
-  this.currentStep = step;
-  newWidth = this.getWidth(this.steps[this.currentStep][1]);
-  this.container.children('.eval').width(newWidth);
-
-  this.container.children('.pre').html(this.steps[step][0]);
-  this.container.children('.eval').html(this.steps[step][1]);
-  this.container.children('.post').html(this.steps[step][3]);
-}
-
-ShowEval.prototype.getWidth = function(text) { // TODO - class style must match or else width will be off.
-  var newElem = $("<div>").hide().html(text);
-  $('body').append(newElem);
-  var newWidth = newElem.width() + 1; // +1 is a hack
-  newElem.remove();
-
-  return newWidth;
-}
-
-ShowEval.prototype.evaluateStep = function(step) {
-  if (step === undefined) {
-    step = this.currentStep;
-  }
-  if (this.currentStep >= this.steps.length) {
-    //this.currentStep = 0;
-    //step = 0;
-    return; // do nothing if on last step
-  }
-  this.setStep(step);
-
-  newWidth = this.getWidth(this.steps[step][2]);
-  var evalElem = this.container.children('.eval');
-
-  var thisShowEval = this;
-
-  evalElem.css('color', 'red');
-  window.setTimeout(function() {
-    evalElem.fadeTo(400, 0, function() {
-      evalElem.animate({width: newWidth, duration: 400}, function() {
-        evalElem.html(thisShowEval.steps[step][2]);
-        evalElem.fadeTo(400, 1, function() {
-          window.setTimeout(function() {
-            evalElem.css('color', 'black');
-            thisShowEval.currentStep += 1;
-            if (thisShowEval.currentStep < thisShowEval.steps.length) {
-              thisShowEval.setStep(thisShowEval.currentStep);
-            }
-          }, 600);
-        });
-      });
-    });
-  }, 600);
-}
 
 $(document).ready(function() {
   s = new ShowEval($('#showeval'), steps);
