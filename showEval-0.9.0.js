@@ -2,23 +2,31 @@
 
 var ShowEval = function(container, steps) {
   this.container = container;
+  this.container.addClass('showEval');
   this.steps = steps;
   this.currentStep = 0;
+  this.createTrace = false; // TODO - reset doesn't work for traces
 
   // create elements
-  this.container.append($('<span>').addClass('pre showEval'));
-  this.container.append($('<span>').addClass('eval showEval'));
-  this.container.append($('<span>').addClass('post showEval'));
+  this.currentStepDiv = $('<div>').addClass('currentStepDiv');
+  this.container.append(this.currentStepDiv);
+  this.currentStepDiv.append($('<span>').addClass('pre'));
+  this.currentStepDiv.append($('<span>').addClass('eval'));
+  this.currentStepDiv.append($('<span>').addClass('post'));
+};
+
+ShowEval.prototype.reset = function() {
+  this.container.find('.previousStep').remove();
+  this.setStep(0);
 };
 
 ShowEval.prototype.setStep = function(step) {
   this.currentStep = step;
   newWidth = this.getWidth(this.steps[this.currentStep][1]);
-  this.container.children('.eval').width(newWidth);
-
-  this.container.children('.pre').html(this.steps[step][0]);
-  this.container.children('.eval').html(this.steps[step][1]);
-  this.container.children('.post').html(this.steps[step][3]);
+  this.currentStepDiv.children('.eval').width(newWidth);
+  this.currentStepDiv.children('.pre').html(this.steps[step][0]);
+  this.currentStepDiv.children('.eval').html(this.steps[step][1]);
+  this.currentStepDiv.children('.post').html(this.steps[step][3]);
 };
 
 ShowEval.prototype.getWidth = function(text) { // TODO - class style must match or else width will be off.
@@ -28,6 +36,10 @@ ShowEval.prototype.getWidth = function(text) { // TODO - class style must match 
   newElem.remove();
 
   return newWidth;
+};
+
+ShowEval.prototype.createPreviousStepDiv = function(step) {
+  this.currentStepDiv.before($('<div>').addClass('previousStep').html(this.steps[step][0] + this.steps[step][1] + this.steps[step][3]));
 };
 
 ShowEval.prototype.evaluateStep = function(step) {
@@ -41,28 +53,38 @@ ShowEval.prototype.evaluateStep = function(step) {
   }
   this.setStep(step);
 
+  var fadeInSpeed = 0;
+  if (this.createTrace) {
+    this.createPreviousStepDiv(step);
+    this.currentStepDiv.hide();
+    fadeInSpeed = 200;
+  }
+
   newWidth = this.getWidth(this.steps[step][2]);
-  var evalElem = this.container.children('.eval');
+  var evalElem = this.currentStepDiv.children('.eval');
 
   var thisShowEval = this;
 
   evalElem.css('color', 'red');
-  window.setTimeout(function() {
-    evalElem.fadeTo(400, 0, function() {
-      //evalElem.css('overflow', 'hidden');
-      evalElem.animate({width: newWidth, duration: 400}, function() {
-        evalElem.html(thisShowEval.steps[step][2]);
-        evalElem.fadeTo(400, 1, function() {
-          window.setTimeout(function() {
-            //evalElem.css('overflow', 'visible');
-            evalElem.css('color', 'black');
-            thisShowEval.currentStep += 1;
-            if (thisShowEval.currentStep < thisShowEval.steps.length) {
-              thisShowEval.setStep(thisShowEval.currentStep);
-            }
-          }, 600);
+
+  this.currentStepDiv.fadeTo(fadeInSpeed, 1, function() {
+    window.setTimeout(function() {
+      evalElem.fadeTo(400, 0, function() {
+        //evalElem.css('overflow', 'hidden');
+        evalElem.animate({width: newWidth, duration: 400}, function() {
+          evalElem.html(thisShowEval.steps[step][2]);
+          evalElem.fadeTo(400, 1, function() {
+            window.setTimeout(function() {
+              //evalElem.css('overflow', 'visible');
+              evalElem.css('color', 'black');
+              thisShowEval.currentStep += 1;
+              if (thisShowEval.currentStep < thisShowEval.steps.length) {
+                thisShowEval.setStep(thisShowEval.currentStep);
+              }
+            }, 600);
+          });
         });
       });
-    });
-  }, 600);
+    }, 600);
+  });
 };
