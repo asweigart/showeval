@@ -3,6 +3,18 @@ showeval.steps('2 + 2') returns
 ['2 + 2', '4']
 
 
+spam[2]
+['cat', 'dog', 'mouse'][2]
+'mouse'
+
+|spam|[2] -> |['cat', 'dog', 'mouse']|[2]
+|['cat', 'dog', 'mouse'][2]| -> |'mouse'|
+
+The evaluation area will turn red, then turn invisible, then change to the width of the result area.
+
+
+
+
 """
 
 import ast
