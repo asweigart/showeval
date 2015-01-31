@@ -1,11 +1,11 @@
 
 
-var ShowEval = function(container, steps) {
+var ShowEval = function(container, steps, showTrace) {
   this.container = container;
   this.container.addClass('showEval');
   this.steps = steps;
   this.currentStep = 0;
-  this.createTrace = false; // TODO - reset doesn't work for traces
+  this.createTrace = showTrace; // TODO - reset doesn't work for traces
 
   // create elements
   this.currentStepDiv = $('<div>').addClass('currentStepDiv');
