@@ -1,5 +1,6 @@
 /*
 ShowEval, a JS module for creating visualizations of expression evaluation. Mainly for programming tutorials.
+0.9.1
 
 Al Sweigart
 al@inventwithpython.com
@@ -9,6 +10,7 @@ https://github.com/asweigart/
 var SHOWEVAL = (function () {
   var thisModule = {};
 
+  thisModule.version = '0.9.1';
 
   thisModule.ShowEval = function(container, steps, showTrace) {
     this.container = container;
@@ -33,6 +35,16 @@ var SHOWEVAL = (function () {
                        s.substring(s.indexOf('}}', s.indexOf('}}{{') + 4) + 2)];  // 'post'
     }
     this.reset();
+  };
+
+  thisModule.ShowEval.prototype.setNextButton = function(nextButtonSelector) {
+    var thisObj = this; // uhg, javascript
+    $(nextButtonSelector).click(function() { thisObj.evaluateStep(); });
+  };
+
+  thisModule.ShowEval.prototype.setResetButton = function(resetButtonSelector) {
+    var thisObj = this; // uhg, javascript
+    $(resetButtonSelector).click(function() { thisObj.reset(0); });
   };
 
   thisModule.ShowEval.prototype.reset = function() {

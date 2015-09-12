@@ -27,13 +27,6 @@
 
 <script>
 
-$( "#nextStep" ).click(function() { s.evaluateStep(); });
-$( "#reset" ).click(function() { s.reset(0); });
-
-$( "#nextStep2" ).click(function() { s2.evaluateStep(); });
-$( "#reset2" ).click(function() { s2.reset(0); });
-
-
 $(document).ready(function() {
   steps = ["''.join({{eggs}}{{['dogs', 'cats', 'moose']}}).upper().join(eggs)",
            "{{''.join(['dogs', 'cats', 'moose'])}}{{'dogscatsmoose'}}.upper().join(eggs)",
@@ -41,8 +34,12 @@ $(document).ready(function() {
            "'DOGSCATSMOOSE'.join({{eggs}}{{['dogs', 'cats', 'moose']}})",
            "{{'DOGSCATSMOOSE'.join(['dogs', 'cats', 'moose'])}}{{'dogsDOGSCATSMOOSEcatsDOGSCATSMOOSEmoose'}}"];
   s = new SHOWEVAL.ShowEval($('#showeval'), steps, false);
-  s2 = new SHOWEVAL.ShowEval($('#showeval2'), steps, true);
+  s.setNextButton('#nextStep');
+  s.setResetButton('#reset');
 
+  s2 = new SHOWEVAL.ShowEval($('#showeval2'), steps, true);
+  s2.setNextButton('#nextStep2');
+  s2.setResetButton('#reset2');
 });
 
 </script>
