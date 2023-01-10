@@ -12,19 +12,10 @@
 </head>
 <body>
 
-<h1>Replace example</h1>
 <button id="nextStep">Next Step</button>
 <button id="reset">Reset</button>
 <div class='showEval'>eggs = ['dogs', 'cats', 'moose']</div>
 <div id="showeval"></div>
-
-
-<h1>Trace example</h1>
-<button id="nextStep2">Next Step</button>
-<button id="reset2">Reset</button>
-<div class='showEval'>eggs = ['dogs', 'cats', 'moose']</div>
-<div id="showeval2"></div>
-
 
 
 <script>
@@ -32,18 +23,13 @@
 $( "#nextStep" ).click(function() { s.evaluateStep(); });
 $( "#reset" ).click(function() { s.reset(0); });
 
-$( "#nextStep2" ).click(function() { s2.evaluateStep(); });
-$( "#reset2" ).click(function() { s2.reset(0); });
-
-
 $(document).ready(function() {
   steps = ["''.join({{eggs}}{{['dogs', 'cats', 'moose']}}).upper().join(eggs)",
            "{{''.join(['dogs', 'cats', 'moose'])}}{{'dogscatsmoose'}}.upper().join(eggs)",
            "{{'dogscatsmoose'.upper()}}{{'DOGSCATSMOOSE'}}.join(eggs)",
            "'DOGSCATSMOOSE'.join({{eggs}}{{['dogs', 'cats', 'moose']}})",
            "{{'DOGSCATSMOOSE'.join(['dogs', 'cats', 'moose'])}}{{'dogsDOGSCATSMOOSEcatsDOGSCATSMOOSEmoose'}}"];
-  s = new SHOWEVAL.ShowEval($('#showeval'), steps, false);
-  s2 = new SHOWEVAL.ShowEval($('#showeval2'), steps, true);
+  s = new SHOWEVAL.ShowEval($('#showeval'), steps, true); // pass false instead of true to replace the text in-place
 
 });
 
