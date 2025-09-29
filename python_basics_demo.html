@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Python Basics ShowEval</title>
+  <script src="jquery-1.11.1.min.js"></script>
+  <script src="showEval-0.10.0.js"></script>
+</head>
+<body style="font-family: monospace; font-size: 2em;">
+
+
+<fieldset id='twoplustwo'></fieldset>
+<fieldset id='twoplustwo2'></fieldset>
+<fieldset id='bigexpr'></fieldset>
+
+<script>
+$(document).ready(function() {
+  let steps;
+
+  steps = ["&gt;&gt;&gt; {{2 + 2}}{{4}}"];
+  new SHOWEVAL.ShowEval($('#twoplustwo'), steps, true, true);
+
+  steps = ["&gt;&gt;&gt; {{2 + 2}}{{4}} == 4",
+           "&gt;&gt;&gt; {{4 == 4}}{{True}}"];
+  new SHOWEVAL.ShowEval($('#twoplustwo2'), steps, true, true);
+
+  steps = ["&gt;&gt;&gt; ({{5 - 1}}{{4}}) * ((7 + 1) / (3 - 1))",
+           "&gt;&gt;&gt; {{(4)}}{{4}} * ((7 + 1) / (3 - 1))",
+           "&gt;&gt;&gt; 4 * (({{7 + 1}}{{8}}) / (3 - 1))",
+           "&gt;&gt;&gt; 4 * ({{(8)}}{{8}} / (3 - 1))",
+           "&gt;&gt;&gt; 4 * (8 / ({{3 - 1}}{{2}}))",
+           "&gt;&gt;&gt; 4 * (8 / {{(2)}}{{2}})",
+           "&gt;&gt;&gt; 4 * ({{8 / 2}}{{4.0}})",
+           "&gt;&gt;&gt; 4 * {{(4.0)}}{{4.0}}",
+           "&gt;&gt;&gt; {{4 * 4.0}}{{16.0}}"];
+  new SHOWEVAL.ShowEval($('#bigexpr'), steps, true, true);
+});
+</script>
+
+
+
+</body>
+</html>
